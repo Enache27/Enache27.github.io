@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BALANCE — Gaming News & Tips</title>
+  <meta name="description" content="BALANCE delivers concise, professional gaming news, guides and reviews — curated to help players improve and stay informed.">
+  <meta name="theme-color" content="#0f1022">
+  <!-- Simple SVG favicon as data URI (keeps repo small) -->
+  <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 rx=%2218%22 fill=%22%236a0dad%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial,%20sans-serif%22%3EB%3C/text%3E%3C/svg%3E'>
+
+  <!-- Structured data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "BALANCE",
+    "url": "https://example.com/",
+    "logo": "https://example.com/images/logo.png",
+    "sameAs": []
+  }
+  </script>
+  <style>
+  :root{
+    --bg-1:#0f1022;
+    --accent-1:#6a0dad;
+    --accent-2:#8a2be2;
+    --card:#0f1724;
+    --muted:#9aa4bf;
+    --glass: rgba(255,255,255,0.03);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #e6eef8;
+    background: linear-gradient(180deg,var(--bg-1), #0b0c16 60%);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:18px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    backdrop-filter: blur(6px);
+  }
+  /* Skip link for keyboard users */
+  .skip-link{
+    position:absolute;
+    left:12px;
+    top:12px;
+    background:#fff;
+    color:#111;
+    padding:8px 12px;
+    border-radius:6px;
+    transform:translateY(-120%);
+    transition:transform .18s ease;
+    z-index:9999;
+  }
+  .skip-link:focus{ transform:translateY(0); }
+
+  /* Mobile nav toggle */
+  .nav-toggle{
+    display:none;
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--muted);
+    padding:8px 10px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .nav-toggle:focus{ outline:2px solid rgba(138,43,226,0.24) }
+  .brand{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .logo{
+    width:44px;
+    height:44px;
+    border-radius:10px;
+    background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    box-shadow: 0 6px 22px rgba(106,13,173,0.18);
+  }
+  nav a{
+    color:var(--muted);
+    text-decoration:none;
+    margin-left:18px;
+    font-weight:600;
+  }
+  nav a:hover{ color:#fff }
+
+  /* Responsive nav behaviour */
+  @media (max-width:900px){
+    .nav-toggle{ display:inline-flex }
+    nav{ display:none }
+    nav[aria-hidden="false"]{ display:flex; position:absolute; left:0; right:0; top:68px; background:linear-gradient(180deg, rgba(15,16,34,0.98), rgba(11,12,22,0.98)); flex-direction:column; padding:12px 20px; gap:10px; z-index:999 }
+    nav a{ margin-left:0 }
+  }
+
+  .container{
+    max-width:1100px;
+    margin:32px auto;
+    padding:0 20px;
+  }
+
+  .hero{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    padding:28px;
+    border-radius:12px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+  }
+  .hero .title{
+    font-size: clamp(20px, 4vw, 40px);
+    line-height:1.02;
+    margin-bottom:8px;
+  }
+  .hero p{ color:var(--muted); margin:0 0 8px 0; }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 2fr 1fr;
+    gap:24px;
+    margin-top:22px;
+  }
+
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:10px;
+    padding:16px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  }
+
+  .news-list{ display:flex; flex-direction:column; gap:14px; }
+  .news-item{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:10px;
+    border-radius:8px;
+    background: var(--glass);
+  }
+  .news-item img{
+    width:120px;
+    height:70px;
+    object-fit:cover;
+    border-radius:6px;
+    background:#111;
+  }
+  .news-item .meta{
+    flex:1;
+  }
+  .news-item h4{ margin:0 0 6px 0; font-size:16px; }
+  .news-item p{ margin:0; color:var(--muted); font-size:13px }
+
+  /* Sidebar */
+  .sidebar .section-title{ color:var(--muted); font-size:13px; margin-bottom:10px }
+  .tip{ padding:12px; border-radius:8px; background: rgba(255,255,255,0.02); margin-bottom:12px }
+  .tip h5{ margin:0 0 6px 0; font-size:14px }
+  .tip p{ margin:0; color:var(--muted); font-size:13px }
+
+  /* Reviews grid */
+  .reviews{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:12px;
+    margin-top:18px;
+  }
+  .review-card{
+    padding:12px;
+    border-radius:8px;
+    background: rgba(255,255,255,0.02);
+    text-align:center;
+  }
+  .review-card h6{ margin:8px 0 6px 0; font-size:14px }
+  .score{
+    display:inline-block;
+    padding:6px 10px;
+    background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+    color:#fff;
+    border-radius:999px;
+    font-weight:700;
+  }
+
+  footer{
+    margin-top:40px;
+    padding:22px 0;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  /* Responsive */
+  @media (max-width:900px){
+    .grid{ grid-template-columns: 1fr; }
+    .reviews{ grid-template-columns: repeat(2, 1fr); }
+    .hero{ flex-direction:column; align-items:flex-start }
+  }
+  @media (max-width:520px){
+    .reviews{ grid-template-columns: 1fr; }
+    .news-item img{ width:96px; height:60px }
+  }
+  /* Media placeholder to avoid using external photos (user requested) */
+  .media-placeholder{width:100%;height:160px;border-radius:8px;background:linear-gradient(135deg,#1b1d2b,#12131a);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.12);font-weight:700}
+  .media-placeholder.small{width:120px;height:70px;border-radius:6px}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted);margin-right:6px}
+  .search-wrap{display:flex;align-items:center;gap:8px}
+  .search-input{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;min-width:200px}
+  .search-clear{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:var(--muted);cursor:pointer}
+  .search-results{margin-top:12px;font-size:13px;color:var(--muted)}
+  .highlight{background:rgba(138,43,226,0.2);padding:0.05em;border-radius:3px}
+  .section-large{padding:28px;border-radius:12px;margin-top:20px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));}
+  .calendar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .release-card{padding:12px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#news">Skip to content</a>
+  <header>
+    <div class="brand">
+      <div class="logo">B</div>
+      <div>
+        <div style="font-weight:700">BALANCE</div>
+        <div style="font-size:12px;color:var(--muted)">Gaming news • Guides • Reviews</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="search-wrap" role="search" aria-label="Site search">
+        <input class="search-input" id="site-search" type="search" placeholder="Search articles, guides, reviews" aria-label="Search site">
+        <button class="search-clear" id="search-clear" title="Clear search">Clear</button>
+      </div>
+      <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Open navigation">Menu</button>
+    </div>
+    <nav id="primary-nav" role="navigation" aria-label="Primary" aria-hidden="true">
+      <a href="index.html" title="Back to home">Home</a>
+      <a href="#news">News</a>
+      <a href="#guides">Guides</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#releases">Releases</a>
+      <a href="#opinion">Opinion</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero card" aria-labelledby="hero-title">
+      <div style="flex:1">
+        <h2 id="hero-title" class="title">Professional gaming coverage, curated tips and reviews</h2>
+        <p>Up-to-date news, hands-on guides, and concise reviews to help you get the edge — written with clarity and precision.</p>
+        <div style="margin-top:12px">
+          <a href="#news" style="text-decoration:none;padding:10px 14px;border-radius:8px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;font-weight:700">See latest</a>
+          <a href="#guides" style="margin-left:8px;text-decoration:none;padding:10px 14px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)">Guides</a>
+        </div>
+      </div>
+      <div style="width:300px;min-width:180px">
+        <div class="media-placeholder" aria-hidden="true">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.14">
+            <path d="M4 6h16v12H4z" fill="currentColor" />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card" id="news" aria-labelledby="news-title">
+        <h3 id="news-title" style="margin:0 0 12px 0">Latest News</h3>
+        <div class="news-list">
+          <article class="news-item" data-type="news">
+            <div class="media-placeholder small" aria-hidden="true">
+              <svg width="48" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.12">
+                <rect x="2" y="4" width="20" height="14" fill="currentColor"></rect>
+              </svg>
+            </div>
+            <div class="meta">
+              <h4>Major title announces expansion pack</h4>
+              <p>Developer confirms a large expansion coming Q2 — new maps, weapons and story content.</p>
+            </div>
+          </article>
+
+          <article class="news-item" data-type="news">
+            <div class="media-placeholder small" aria-hidden="true"></div>
+            <div class="meta">
+              <h4>Esports finals set record viewership</h4>
+              <p>The recent tournament peaked with record concurrent viewers and strong engagement.</p>
+            </div>
+          </article>
+
+          <article class="news-item" data-type="news">
+            <div class="media-placeholder small" aria-hidden="true"></div>
+            <div class="meta">
+              <h4>Hotfix rolled out for performance issues</h4>
+              <p>Small patch addresses stutter and matchmaking errors across platforms.</p>
+            </div>
+          </article>
+          <article class="news-item" data-type="news">
+            <div class="media-placeholder small" aria-hidden="true"></div>
+            <div class="meta">
+              <h4>Indie developer teases surprise update</h4>
+              <p>A small studio hints at a major update with co-op features and custom modes.</p>
+            </div>
+          </article>
+          <article class="news-item" data-type="news">
+            <div class="media-placeholder small" aria-hidden="true"></div>
+            <div class="meta">
+              <h4>Matchmaking improvements arrive on console</h4>
+              <p>Better region selection and prioritization aims to reduce queue times.</p>
+            </div>
+          </article>
+          <article class="news-item" data-type="news">
+            <div class="media-placeholder small" aria-hidden="true"></div>
+            <div class="meta">
+              <h4>New controller firmware optimizes latency</h4>
+              <p>Hardware maker releases optional firmware to improve sampling rate.</p>
+            </div>
+          </article>
+        </div>
+
+        <h3 style="margin-top:18px">Guides & Tutorials</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          <div class="tip">
+            <h5>Top 5 strafing tips for FPS</h5>
+            <p>Improve movement control and reduce incoming fire with these practical strafing techniques.</p>
+          </div>
+          <div class="tip">
+            <h5>Optimal settings for low-latency</h5>
+            <p>A checklist of display and network settings to shave milliseconds off your input lag.</p>
+          </div>
+          <div class="tip">
+            <h5>Beginner's guide to competitive ranking</h5>
+            <p>How to climb ranks: mindset, practice structure, and common pitfalls to avoid.</p>
+          </div>
+        </div>
+
+          <div class="section-large" id="analysis">
+            <h3>Featured analysis</h3>
+            <div style="display:flex;gap:14px;align-items:flex-start;margin-top:12px">
+              <div style="flex:1">
+                <h4>How meta shifts are changing the top-tier tournaments</h4>
+                <p class="muted">A concise breakdown of recent patch effects and the teams adapting fastest.</p>
+                <p>We analyze pick rates, positional changes and why certain team comps gained traction after the last balance update. The short version: faster rotations and utility-denial mechanics are shaping the opening minutes more than raw damage outputs.</p>
+              </div>
+              <div style="width:260px">
+                <div class="media-placeholder" style="height:140px"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-large" id="opinion">
+            <h3>Opinion</h3>
+            <article class="tip">
+              <h4>Why clarity beats hyperbole in game coverage</h4>
+              <p class="muted">Editorial — Balance editorial explains our approach to fair, useful coverage.</p>
+              <p>We focus on what helps players make decisions — clear takeaways, reproducible tips, and honest reviews. Sensational headlines may promise clicks, but clarity builds trust and improves player experience.</p>
+            </article>
+          </div>
+
+      </section>
+
+      <aside class="sidebar">
+        <div class="card">
+          <div class="section-title">Reviews & Quick Picks</div>
+          <div class="reviews">
+            <div class="review-card">
+              <div style="height:60px;background:#0a0b12;border-radius:6px"></div>
+              <h6>Rogue Horizon</h6>
+              <div class="score">8.7</div>
+            </div>
+            <div class="review-card">
+              <div style="height:60px;background:#0a0b12;border-radius:6px"></div>
+              <h6>Arc Mechanic</h6>
+              <div class="score">9.0</div>
+            </div>
+            <div class="review-card">
+              <div style="height:60px;background:#0a0b12;border-radius:6px"></div>
+              <h6>Neon Drift</h6>
+              <div class="score">8.2</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">Esports Highlights</div>
+          <div class="tip">
+            <h5>Weekly bracket recap</h5>
+            <p>Key plays and meta shifts from the weekend's matches.</p>
+          </div>
+          <div class="tip">
+            <h5>Player to watch</h5>
+            <p>Rising star with exceptional aim and incredible game sense.</p>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">Upcoming releases</div>
+          <div class="calendar">
+            <div class="release-card"><strong>Nov 12</strong><div class="muted">Rogue Horizon: Expansion</div></div>
+            <div class="release-card"><strong>Dec 01</strong><div class="muted">Arc Mechanic: DLC</div></div>
+            <div class="release-card"><strong>Dec 15</strong><div class="muted">Neon Drift: Winter Update</div></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">Popular tags</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="tag">#esports</span>
+            <span class="tag">#guides</span>
+            <span class="tag">#patch-notes</span>
+            <span class="tag">#reviews</span>
+            <span class="tag">#hardware</span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">Authors</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="tip"><strong>Alex R.</strong><div class="muted">Lead editor — esports and meta analysis</div></div>
+            <div class="tip"><strong>Sam T.</strong><div class="muted">Guides and tutorials</div></div>
+            <div class="tip"><strong>Lee P.</strong><div class="muted">Reviews and hardware</div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">Subscribe</div>
+          <form class="tip" id="subscribe-form" aria-label="Subscribe to BALANCE">
+            <label for="email" style="display:block;font-size:13px;margin-bottom:6px;color:var(--muted)">Get concise updates — once a week</label>
+            <div style="display:flex;gap:8px">
+              <input id="email" name="email" type="email" placeholder="you@example.com" required style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+              <button type="submit" style="padding:10px 12px;border-radius:8px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));border:none;color:#fff;font-weight:700">Subscribe</button>
+            </div>
+            <div id="subscribe-msg" style="font-size:13px;color:var(--muted);margin-top:8px"></div>
+          </form>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div>© BALANCE — Curated gaming content. Built with care.</div>
+    </footer>
+  </main>
+  <script>
+    (function(){
+      'use strict';
+      // Mobile nav toggle
+      var btn = document.querySelector('.nav-toggle');
+      var nav = document.getElementById('primary-nav');
+      if(btn && nav){
+        btn.addEventListener('click', function(){
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          nav.setAttribute('aria-hidden', String(expanded));
+        });
+        // Close nav on escape
+        document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ btn.setAttribute('aria-expanded','false'); nav.setAttribute('aria-hidden','true'); } });
+      }
+
+      // Subscribe form handler (no backend)
+      var form = document.getElementById('subscribe-form');
+      var msg = document.getElementById('subscribe-msg');
+      if(form){
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          var email = form.email.value.trim();
+          if(!email || !/.+@.+\..+/.test(email)){
+            msg.textContent = 'Please enter a valid email.'; msg.style.color = '#ffb4b4'; return;
+          }
+          msg.textContent = 'Thanks! Check your inbox to confirm subscription.'; msg.style.color = 'lightgreen'; form.reset();
+        });
+      }
+
+      // Search logic: filter news, tips, reviews and analysis
+      var searchInput = document.getElementById('site-search');
+      var clearBtn = document.getElementById('search-clear');
+      var resultsCounter = null;
+      function normalize(s){ return (s||'').toLowerCase(); }
+
+      function highlight(node, query){
+        if(!query) return;
+        var re = new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+        Array.from(node.childNodes).forEach(function(child){
+          if(child.nodeType === 3){ // text
+            var m = child.textContent.match(re);
+            if(m){
+              var span = document.createElement('span');
+              span.innerHTML = child.textContent.replace(re, '<span class="highlight">$1</span>');
+              child.replaceWith(span);
+            }
+          } else if(child.nodeType === 1){
+            highlight(child, query);
+          }
+        });
+      }
+
+      function clearHighlights(container){
+        container.querySelectorAll('.highlight').forEach(function(h){
+          var text = document.createTextNode(h.textContent);
+          h.replaceWith(text);
+        });
+      }
+
+      function performSearch(){
+        var q = normalize(searchInput.value.trim());
+        var items = document.querySelectorAll('.news-item, .tip, .review-card');
+        var count = 0;
+        items.forEach(function(item){
+          // reset highlights
+          clearHighlights(item);
+          var text = normalize(item.textContent);
+          var matched = q === '' ? true : text.indexOf(q) !== -1;
+          item.style.display = matched ? '' : 'none';
+          if(matched) count++;
+          if(matched && q) highlight(item, q);
+        });
+        if(!resultsCounter){
+          resultsCounter = document.createElement('div');
+          resultsCounter.className = 'search-results';
+          var header = document.querySelector('main .container');
+          header.insertBefore(resultsCounter, header.firstChild);
+        }
+        resultsCounter.textContent = q === '' ? '' : (count + ' results found for "' + searchInput.value.trim() + '"');
+      }
+
+      if(searchInput){
+        searchInput.addEventListener('input', function(){ performSearch(); });
+        clearBtn.addEventListener('click', function(){ searchInput.value=''; searchInput.focus(); performSearch(); });
+      }
+    })();
+  </script>
+</body>
+</html>
